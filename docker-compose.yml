@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  video-editor:
+    build: .
+    volumes:
+      - ./:/app
+    command: ["input.mov", "output.mov"]
+
