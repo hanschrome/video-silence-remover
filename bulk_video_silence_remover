@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Check if a directory argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+
+# Get the absolute path of the directory
+input_dir=$(readlink -f "$1")
+
+# Check if the directory exists
+if [ ! -d "$input_dir" ]; then
+  echo "Error: Directory not found."
+  exit 1
+fi
+
+# Iterate through each file in the directory and call video_silence_remover on it
+for file in "${input_dir}"/*; do
+  if [ -f "$file" ]; then
+    echo "Processing: $file"
+    video_silence_remover "$file"
+    status=$?
+    if [ $status -ne 0 ]; then
+      echo "Error: Failed to process $file"
+    else
+      echo "Processed: $file"
+    fi
+  fi
+done
+
+echo "Bulk processing completed."
+
