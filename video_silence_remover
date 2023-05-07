@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Check if a file argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <file>"
+  exit 1
+fi
+
+# Get the absolute path of the input file
+input_file=$(readlink -f "$1")
+
+# Check if the file exists
+if [ ! -e "$input_file" ]; then
+  echo "Error: File not found."
+  exit 1
+fi
+
+# Set variables
+original_dir=$(dirname "$input_file")
+file_name=$(basename "$input_file")
+file_ext="${file_name##*.}"
+file_base="${file_name%.*}"
+output_file="${file_base}_vsr.${file_ext}"
+vsr_dir="/home/hans/Projects/video-silence-remover"
+
+# Copy the file to the target directory
+cp "$input_file" "${vsr_dir}/input.mov"
+
+# Change to the target directory
+cd "$vsr_dir"
+
+# Run the make command
+make edit input.mov output.mov
+
+# Check if the output file is created successfully
+if [ ! -e "output.mov" ]; then
+  echo "Error: Failed to generate output.mov."
+  exit 1
+fi
+
+# Copy the output file to the original directory
+cp "output.mov" "${original_dir}/${output_file}"
+
+# Remove the input and output files from the target directory
+rm "input.mov" "output.mov"
+
+# Print the success message
+echo "File has been processed successfully."
+
