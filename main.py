@@ -3,7 +3,7 @@ from moviepy.editor import *
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
 
-def remove_silence(input_file, output_file, threshold=-40, min_silence_length=1000):
+def remove_silence(input_file, output_file, threshold=-40, min_silence_length=1000, padding=0.5):
     video = VideoFileClip(input_file)
     audio = video.audio
     audio.write_audiofile("temp_audio.wav")
@@ -15,7 +15,8 @@ def remove_silence(input_file, output_file, threshold=-40, min_silence_length=10
     for start, end in nonsilent_slices:
         start /= 1000  # Convertir a segundos
         end /= 1000  # Convertir a segundos
-        clip = video.subclip(start, end)
+        end += padding
+        clip = video.subclip(start, min(end, video.duration))  
         final_clips.append(clip)
 
     final_video = concatenate_videoclips(final_clips)
