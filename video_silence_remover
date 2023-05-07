@@ -21,7 +21,7 @@ file_name=$(basename "$input_file")
 file_ext="${file_name##*.}"
 file_base="${file_name%.*}"
 output_file="${file_base}_vsr.${file_ext}"
-vsr_dir="/home/hans/Projects/video-silence-remover"
+vsr_dir="~/Projects/video-silence-remover"
 
 # Copy the file to the target directory
 cp "$input_file" "${vsr_dir}/input.mov"
